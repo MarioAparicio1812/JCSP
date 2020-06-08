@@ -1,8 +1,72 @@
 package cc.carretera;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jcsp.lang.*;
 
 public class CarreteraCSP implements Carretera, CSProcess {
+  private class Estado {
+    private class EstadoCoche {
+      private int tks;
+      private int segmento = 0;
+      private bool circulando = false;
+      private One2OneChannel channel;
+
+      public EstadoCoche(int tks) {
+        this.tks = tks;
+      }
+
+      public void entra(int tks) {
+        // TODO
+      }
+      
+      public void circula() {
+        // TODO
+      }
+        
+      public void avanza(int tks) {
+        // TODO
+      }
+        
+      public void sale() {
+        // TODO
+      }
+        
+      public void tick() {
+        // TODO
+      }
+    }
+    
+    // Esto es un mapa de coches. Con put(key, value) meto en la posicion
+    // key el valor value. Con get(key), leo. Con remove(key), elimino.
+    private Map<String, EstadoCoche> coches = new HashMap<>();
+
+    public void entra(String id, int tks) {
+      EstadoCoche estado = new EstadoCoche(tks);
+      this.coches.put(id, estado);
+      estado.entra();
+    }
+
+    public void circula(String id) {
+      this.coches.get(id).circula();
+    }
+
+    public void avanza(String id, int tks) {
+      this.coches.get(id).avanza(tks);
+    }
+
+    public void sale(String id) {
+      this.coches.remove(id).sale();
+    }
+
+    public void tick() {
+      // Esto es mas avanzado, pero es un bucle for.
+      this.coches.entrySet().parallelStream().forEach((entry) -> entry.getValue().tick());
+    }
+  }
+
+
   // TODO: Declaración de canales
   // Ej. private Any2One chOp;
   private final Any2OneChannel[] Avanzar;
@@ -14,23 +78,22 @@ public class CarreteraCSP implements Carretera, CSProcess {
   private final int carriles;
 
   public CarreteraCSP(int segmentos, int carriles) {
-    
-	this.segmentos = segmentos;
+    this.segmentos = segmentos;
     this.carriles = carriles;
-    this.Avanzar = new Any2OneChannel[segmentos+2];
-    for(int i = 0;i<segmentos+2;i++) {
+
+    this.Avanzar = new Any2OneChannel[segmentos + 2];
+    for(int i = 0; i < segmentos + 2; i++) {
     	Avanzar[i] = Channel.any2one();
     }
-    this.Tks = new Any2OneChannel[segmentos+2];
-    for(int i = 0; i<segmentos;i++) {
+
+    this.Tks = new Any2OneChannel[segmentos + 2];
+    for(int i = 0; i < segmentos;i++) {
     	Tks[i] = Channel.any2one();
     }
-    
+
     Circulando = Channel.one2one();
 
-    // TODO: Creación de canales para comunicación con el servidor
-    // Ej. chOp = Channel.any2one();
-
+    coches = new HashMap<>();
     // Puesta en marcha del servidor: alternativa sucia (desde el
     // punto de vista de CSP) a Parallel que nos ofrece JCSP para
     // poner en marcha un CSProcess
@@ -40,8 +103,7 @@ public class CarreteraCSP implements Carretera, CSProcess {
   public Pos entrar(String car, int tks) {
     // TODO: código que ejecuta el cliente para enviar/recibir un
     // mensaje al server para que ejecute entrar
-	  Avanzar[0].out().write(car);
-	  Tks[0].out().write(tks);
+
     return null;
   }
 
