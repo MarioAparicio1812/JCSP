@@ -3,11 +3,13 @@ package cc.carretera;
 import org.jcsp.lang.*;
 
 public class CarreteraCSP implements Carretera, CSProcess {
-  // TODO: Declaraci髇 de canales
+  // TODO: Declaraci贸n de canales
   // Ej. private Any2One chOp;
   private final Any2OneChannel[] Avanzar;
+  private final Any2OneChannel[] Tks;
+  private final One2OneChannel Circulando;
 
-  // Configuraci髇 de la carretera
+  // Configuraci贸n de la carretera
   private final int segmentos;
   private final int carriles;
 
@@ -15,12 +17,18 @@ public class CarreteraCSP implements Carretera, CSProcess {
     
 	this.segmentos = segmentos;
     this.carriles = carriles;
-    this.Avanzar = new Any2OneChannel[segmentos];
-    for(int i = 0;i<segmentos;i++) {
+    this.Avanzar = new Any2OneChannel[segmentos+2];
+    for(int i = 0;i<segmentos+2;i++) {
     	Avanzar[i] = Channel.any2one();
     }
+    this.Tks = new Any2OneChannel[segmentos+2];
+    for(int i = 0; i<segmentos;i++) {
+    	Tks[i] = Channel.any2one();
+    }
+    
+    Circulando = Channel.one2one();
 
-    // TODO: Creaci髇 de canales para comunicaci髇 con el servidor
+    // TODO: Creaci贸n de canales para comunicaci贸n con el servidor
     // Ej. chOp = Channel.any2one();
 
     // Puesta en marcha del servidor: alternativa sucia (desde el
@@ -30,59 +38,61 @@ public class CarreteraCSP implements Carretera, CSProcess {
   }
 
   public Pos entrar(String car, int tks) {
-    // TODO: c骴igo que ejecuta el cliente para enviar/recibir un
+    // TODO: c贸digo que ejecuta el cliente para enviar/recibir un
     // mensaje al server para que ejecute entrar
+	  Avanzar[0].out().write(car);
+	  Tks[0].out().write(tks);
     return null;
   }
 
   public Pos avanzar(String car, int tks) {
-    // TODO: c骴igo que ejecuta el cliente para enviar/recibir un
+    // TODO: c贸digo que ejecuta el cliente para enviar/recibir un
     // mensaje al server para que ejecute avanzar
     return null;
   }
 
   public void salir(String car) {
-    // TODO: c骴igo que ejecuta el cliente para enviar un mensaje al
+    // TODO: c贸digo que ejecuta el cliente para enviar un mensaje al
     // server para que ejecute salir
   }
 
   public void circulando(String car) {
-    // TODO: c骴igo que ejecuta el cliente para enviar un mensaje al
+    // TODO: c贸digo que ejecuta el cliente para enviar un mensaje al
     // server para que ejecute circulando
   }
 
   public void tick() {
-    // TODO: c骴igo que ejecuta el cliente para enviar un mensaje al
+    // TODO: c贸digo que ejecuta el cliente para enviar un mensaje al
     // server para que ejecute tick
   }
 
-  // C骴igo del servidor
+  // C贸digo del servidor
   public void run() {
-    // TODO: declaraci髇 e inicializaci髇 del estado del recurso
+    // TODO: declaraci贸n e inicializaci贸n del estado del recurso
 
-    // TODO: declaraci髇 e inicializaci髇 de estructuras de datos para
+    // TODO: declaraci贸n e inicializaci贸n de estructuras de datos para
     // almacenar peticiones de los clientes
 
-    // TODO: declaraci髇 e inicializaci髇 de arrays necesarios para
-    // poder hacer la recepci髇 no determinista (Alternative)
+    // TODO: declaraci贸n e inicializaci贸n de arrays necesarios para
+    // poder hacer la recepci贸n no determinista (Alternative)
 
     // TODO: cambiar null por el array de canales
     Alternative servicios = new Alternative(null);
 
     // Bucle principal del servicio
     while(true){
-      // TODO: declaraci髇 de variables auxiliares
+      // TODO: declaraci贸n de variables auxiliares
       int servicio;
 
-      // TODO: c醠culo de las guardas
+      // TODO: c谩lculo de las guardas
 
       // TODO: cambiar null por el array de guardas
       servicio = servicios.fairSelect(null);
 
-      // TODO: ejecutar la operaci髇 solicitada por el cliente
+      // TODO: ejecutar la operaci贸n solicitada por el cliente
       switch (servicio){
       case 0:
-        // TODO: ejecutar operaci髇 0 o almacenar la petici髇 y
+        // TODO: ejecutar operaci贸n 0 o almacenar la petici贸n y
         // responder al cliente si es posible
 
         break;
